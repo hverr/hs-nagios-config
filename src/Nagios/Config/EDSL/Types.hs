@@ -3,7 +3,7 @@ module Nagios.Config.EDSL.Types where
 -- | A host definition is used to define a physical server, workstation,
 -- device, etc. that resides on your network.
 data Host = Host { hostUse :: Maybe Host
-                 , hostName :: Maybe String
+                 , hostName :: String
                  , hostAlias :: Maybe String
                  , hostDisplayName :: Maybe String
                  , hostAddress :: Maybe String
