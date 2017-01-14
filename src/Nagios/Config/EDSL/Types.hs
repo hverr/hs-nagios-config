@@ -67,18 +67,73 @@ data HostGroup = HostGroup { hostGroupName :: String
 
 -- | A service definition is used to identify a "service" that runs on a host.
 data Service = Service { serviceUse :: Maybe Service
+                       , serviceName :: String
                        , serviceHostGroupName :: Maybe String
-                       , serviceDescription :: String
-                       , serviceCheckCommand :: Command
+                       , serviceDescription :: Maybe String
+                       , serviceDisplayName :: Maybe String
+                       , serviceIsVolatile :: Maybe Bool
+                       , serviceCheckCommand :: Maybe Command
+                       , serviceInitialState :: Maybe ServiceState
                        , serviceMaxCheckAttempts :: Maybe Int
                        , serviceCheckInterval :: Maybe Int
                        , serviceRetryInterval :: Maybe Int
+                       , serviceActiveChecksEnabled :: Maybe Bool
+                       , servicePassiveChecksEnabled :: Maybe Bool
+                       , serviceParallelizeCheck :: Maybe Bool
                        , serviceCheckPeriod :: Maybe TimePeriod
+                       , serviceObsessOverService :: Maybe Bool
+                       , serviceCheckFreshness :: Maybe Bool
+                       , serviceFreshnessThreshold :: Maybe Int
+                       , serviceEventHandler :: Maybe Command
+                       , serviceEventHandlerEnabled :: Maybe Bool
+                       , serviceFlapDetectionEnabled :: Maybe Bool
+                       , serviceProcessPerfData :: Maybe Bool
+                       , serviceRetainStatusInformation :: Maybe Bool
+                       , serviceRetainNonStatusInformation :: Maybe Bool
                        , serviceNotificationInterval :: Maybe Int
                        , serviceNotificationPeriod :: Maybe TimePeriod
+                       , serviceNotificationOptions :: [ServiceNotificationOption]
+                       , serviceNotificationsEnabled :: Maybe Bool
                        , serviceContacts :: [Contact]
                        , serviceContactGroups :: [ContactGroup]
                        , serviceNotes :: Maybe String
+                       , serviceRegister :: Maybe Bool
+                       }
+
+-- | Create a new service with a specified name.
+service :: String -> Service
+service name = Service { serviceUse = Nothing
+                       , serviceName = name
+                       , serviceHostGroupName = Nothing
+                       , serviceDescription = Nothing
+                       , serviceDisplayName = Nothing
+                       , serviceIsVolatile = Nothing
+                       , serviceCheckCommand = Nothing
+                       , serviceInitialState = Nothing
+                       , serviceMaxCheckAttempts = Nothing
+                       , serviceCheckInterval = Nothing
+                       , serviceRetryInterval = Nothing
+                       , serviceActiveChecksEnabled = Nothing
+                       , servicePassiveChecksEnabled = Nothing
+                       , serviceParallelizeCheck = Nothing
+                       , serviceCheckPeriod = Nothing
+                       , serviceObsessOverService = Nothing
+                       , serviceCheckFreshness = Nothing
+                       , serviceFreshnessThreshold = Nothing
+                       , serviceEventHandler = Nothing
+                       , serviceEventHandlerEnabled = Nothing
+                       , serviceFlapDetectionEnabled = Nothing
+                       , serviceProcessPerfData = Nothing
+                       , serviceRetainStatusInformation = Nothing
+                       , serviceRetainNonStatusInformation = Nothing
+                       , serviceNotificationInterval = Nothing
+                       , serviceNotificationPeriod = Nothing
+                       , serviceNotificationOptions = []
+                       , serviceNotificationsEnabled = Nothing
+                       , serviceContacts = []
+                       , serviceContactGroups = []
+                       , serviceNotes = Nothing
+                       , serviceRegister = Nothing
                        }
 
 -- | A service group definition is used to group on ore more services together.
@@ -153,6 +208,11 @@ contactgroup name alias = ContactGroup { contactGroupName = name
                                        , contactGroupAlias = alias
                                        , contactGroupMembers = []
                                        }
+
+data ServiceState = ServiceStateOK
+                  | ServiceStateWarning
+                  | ServiceStateUnknown
+                  | ServiceStateCritical
 
 data ServiceNotificationOption = ServiceNotificationWarning
                                | ServiceNotificationUnknown

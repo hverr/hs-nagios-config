@@ -20,6 +20,7 @@ library
                      , Nagios.Config.EDSL.Defaults.Commands
                      , Nagios.Config.EDSL.Defaults.Contacts
                      , Nagios.Config.EDSL.Defaults.Hosts
+                     , Nagios.Config.EDSL.Defaults.Services
                      , Nagios.Config.EDSL.Defaults.TimePeriods
   build-depends:       base >= 4.7 && < 5
   ghc-options:         -Wall
