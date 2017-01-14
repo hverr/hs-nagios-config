@@ -33,4 +33,3 @@ linuxServer = (host "linux-server")
     , hostContactGroups = [admins]
     , hostRegister = Just False
     }
-
