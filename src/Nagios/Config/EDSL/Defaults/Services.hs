@@ -31,3 +31,12 @@ genericService = (service "generic-service")
     , serviceNotificationPeriod = Just always
     , serviceRegister = Just False
     }
+
+localService :: Service
+localService = (service "local-service")
+    { serviceUse = Just genericService
+    , serviceMaxCheckAttempts = Just 4
+    , serviceCheckInterval = Just 5
+    , serviceRetryInterval = Just 1
+    , serviceRegister = Just False
+    }
