@@ -33,3 +33,10 @@ linuxServer = (host "linux-server")
     , hostContactGroups = [admins]
     , hostRegister = Just False
     }
+
+localhost :: Host
+localhost = (host "localhost")
+    { hostUse = Just linuxServer
+    , hostAlias = Just "localhost"
+    , hostAddress = Just "127.0.0.1"
+    }
