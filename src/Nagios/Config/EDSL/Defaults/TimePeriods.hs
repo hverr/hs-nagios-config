@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Nagios.Config.EDSL.Defaults.TimePeriods where
 
 import Nagios.Config.EDSL.Types
