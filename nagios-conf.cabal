@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Nagios.Config.EDSL
                      , Nagios.Config.EDSL.Types
+                     , Nagios.Config.EDSL.Defaults.Commands
                      , Nagios.Config.EDSL.Defaults.Contacts
                      , Nagios.Config.EDSL.Defaults.TimePeriods
   build-depends:       base >= 4.7 && < 5
