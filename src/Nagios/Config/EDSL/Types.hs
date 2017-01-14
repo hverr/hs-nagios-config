@@ -97,6 +97,7 @@ data Contact = Contact { contactUse :: Maybe Contact
                        , contactCanSubmitCommands :: Maybe Bool
                        , contactRetainStatusInformation :: Maybe Bool
                        , contactRetainNonStatusInformation :: Maybe Bool
+                       , contactRegister :: Maybe Bool
                        }
 
 -- | Create a new contact with the specified name
@@ -117,6 +118,7 @@ contact name = Contact { contactUse = Nothing
                        , contactCanSubmitCommands = Nothing
                        , contactRetainStatusInformation = Nothing
                        , contactRetainNonStatusInformation = Nothing
+                       , contactRegister = Nothing
                        }
 
 -- | A contact group definition is used to group one ore more contacts together.
@@ -130,12 +132,30 @@ data ServiceNotificationOption = ServiceNotificationWarning
                                | ServiceNotificationCritical
                                | ServiceNotificationRecovery
                                | ServiceNotificationFlapping
+                               | ServiceNotificationScheduledDowntime
+
+serviceNotificationAlways :: [ServiceNotificationOption]
+serviceNotificationAlways = [ServiceNotificationWarning
+                            , ServiceNotificationUnknown
+                            , ServiceNotificationCritical
+                            , ServiceNotificationRecovery
+                            , ServiceNotificationFlapping
+                            , ServiceNotificationScheduledDowntime]
+
 
 data HostNotificationOption = HostNotificationDown
                             | HostNotificationUnreachable
                             | HostNotificationRecovery
                             | HostNotificationFlapping
                             | HostNotificationScheduledDowntime
+
+hostNotificationAlways :: [HostNotificationOption]
+hostNotificationAlways = [HostNotificationDown
+                         , HostNotificationUnreachable
+                         , HostNotificationRecovery
+                         , HostNotificationFlapping
+                         , HostNotificationScheduledDowntime]
+
 
 data Weekday a = Monday a
                | Tuesday a
