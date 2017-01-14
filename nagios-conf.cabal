@@ -23,6 +23,7 @@ library
                      , Nagios.Config.EDSL.Defaults.Hosts
                      , Nagios.Config.EDSL.Defaults.Services
                      , Nagios.Config.EDSL.Defaults.TimePeriods
+                     , Nagios.Config.EDSL.Serialize
   build-depends:       base >= 4.7 && < 5
   ghc-options:         -Wall
   default-language:    Haskell2010
