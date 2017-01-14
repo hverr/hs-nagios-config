@@ -15,7 +15,10 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Nagios.Config.EDSL.Types
+  exposed-modules:     Nagios.Config.EDSL
+                     , Nagios.Config.EDSL.Types
+                     , Nagios.Config.EDSL.Defaults.Contacts
+                     , Nagios.Config.EDSL.Defaults.TimePeriods
   build-depends:       base >= 4.7 && < 5
   ghc-options:         -Wall
   default-language:    Haskell2010
