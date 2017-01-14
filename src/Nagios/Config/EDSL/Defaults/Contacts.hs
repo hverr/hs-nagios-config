@@ -16,6 +16,17 @@ genericContact = (contact "generic-contact")
     , contactRegister = Just False
     }
 
+nagiosadmin :: Contact
+nagiosadmin = (contact "nagiosadmin")
+    { contactUse = Just genericContact
+    , contactAlias = Just "Nagios Admin"
+    , contactEmail = Just "nagios@localhost"
+    }
+
+admins :: ContactGroup
+admins = (contactgroup "admins" "Nagios Administrators")
+    { contactGroupMembers = [nagiosadmin] }
+
 notifyHostByEmail :: Command
 notifyHostByEmail = Command "notify-host-by-email"
                             "/usr/bin/printf \"%b\" \"***** Nagios *****\\n\\nNotification Type: $NOTIFICATIONTYPE$\\nHost: $HOSTNAME$\\nState: $HOSTSTATE$\\nAddress: $HOSTADDRESS$\\nInfo: $HOSTOUTPUT$\\n\\nDate/Time: $LONGDATETIME$\\n\" | /bin/mail -s \"** $NOTIFICATIONTYPE$ Host Alert: $HOSTNAME$ is $HOSTSTATE$ **\" $CONTACTEMAIL$"

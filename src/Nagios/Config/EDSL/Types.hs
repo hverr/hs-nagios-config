@@ -127,6 +127,13 @@ data ContactGroup = ContactGroup { contactGroupName :: String
                                  , contactGroupMembers :: [Contact]
                                  }
 
+-- | Create a new contact group with the specified name and alias
+contactgroup :: String -> String -> ContactGroup
+contactgroup name alias = ContactGroup { contactGroupName = name
+                                       , contactGroupAlias = alias
+                                       , contactGroupMembers = []
+                                       }
+
 data ServiceNotificationOption = ServiceNotificationWarning
                                | ServiceNotificationUnknown
                                | ServiceNotificationCritical
