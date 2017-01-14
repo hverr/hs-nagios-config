@@ -13,9 +13,16 @@ data Host = Host { hostUse :: Maybe Host
                  , hostMaxCheckAttempts :: Maybe Int
                  , hostNotes :: Maybe String
                  , hostCheckPeriod :: Maybe TimePeriod
+                 , hostEventHandlerEnabled :: Maybe Bool
+                 , hostFlapDetectionEnabled :: Maybe Bool
+                 , hostProcessPerfData :: Maybe Bool
+                 , hostRetainStatusInformation :: Maybe Bool
+                 , hostRetainNonStatusInformation :: Maybe Bool
                  , hostContactGroups :: [ContactGroup]
                  , hostNotificationInterval :: Maybe TimePeriod
                  , hostNotificationPeriod :: Maybe TimePeriod
+                 , hostNotificationsEnabled :: Maybe Bool
+                 , hostRegister :: Maybe Bool
                  }
 
 -- | Create a new host with a specific name
@@ -31,9 +38,16 @@ host name = Host { hostUse = Nothing
                  , hostMaxCheckAttempts = Nothing
                  , hostNotes = Nothing
                  , hostCheckPeriod = Nothing
+                 , hostEventHandlerEnabled = Nothing
+                 , hostFlapDetectionEnabled = Nothing
+                 , hostProcessPerfData = Nothing
+                 , hostRetainStatusInformation = Nothing
+                 , hostRetainNonStatusInformation = Nothing
                  , hostContactGroups = []
                  , hostNotificationInterval = Nothing
                  , hostNotificationPeriod = Nothing
+                 , hostNotificationsEnabled = Nothing
+                 , hostRegister = Nothing
                  }
 
 -- | A host gruop definition is used to gruop one or more hosts together for
