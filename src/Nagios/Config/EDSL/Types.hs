@@ -11,6 +11,8 @@ data Host = Host { hostUse :: Maybe Host
                  , hostGroups :: [HostGroup]
                  , hostCheckCommand :: Maybe Command
                  , hostMaxCheckAttempts :: Maybe Int
+                 , hostCheckInterval :: Maybe Int
+                 , hostRetryInterval :: Maybe Int
                  , hostNotes :: Maybe String
                  , hostCheckPeriod :: Maybe TimePeriod
                  , hostEventHandlerEnabled :: Maybe Bool
@@ -19,8 +21,9 @@ data Host = Host { hostUse :: Maybe Host
                  , hostRetainStatusInformation :: Maybe Bool
                  , hostRetainNonStatusInformation :: Maybe Bool
                  , hostContactGroups :: [ContactGroup]
-                 , hostNotificationInterval :: Maybe TimePeriod
+                 , hostNotificationInterval :: Maybe Int
                  , hostNotificationPeriod :: Maybe TimePeriod
+                 , hostNotificationOptions :: [HostNotificationOption]
                  , hostNotificationsEnabled :: Maybe Bool
                  , hostRegister :: Maybe Bool
                  }
@@ -36,6 +39,8 @@ host name = Host { hostUse = Nothing
                  , hostGroups = []
                  , hostCheckCommand = Nothing
                  , hostMaxCheckAttempts = Nothing
+                 , hostCheckInterval = Nothing
+                 , hostRetryInterval = Nothing
                  , hostNotes = Nothing
                  , hostCheckPeriod = Nothing
                  , hostEventHandlerEnabled = Nothing
@@ -46,6 +51,7 @@ host name = Host { hostUse = Nothing
                  , hostContactGroups = []
                  , hostNotificationInterval = Nothing
                  , hostNotificationPeriod = Nothing
+                 , hostNotificationOptions = []
                  , hostNotificationsEnabled = Nothing
                  , hostRegister = Nothing
                  }
