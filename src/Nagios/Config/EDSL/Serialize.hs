@@ -17,6 +17,7 @@ lfield name value = Field name <$> encodeList value
 
 class Serializable x => ObjectType x where
     objectType :: x -> String
+    objectSame :: x -> x -> Bool
 
 class Serializable x where
     serialize :: x -> [Field]
@@ -41,6 +42,16 @@ instance ObjectType Object where
     objectType (OTimePeriod x) = objectType x
     objectType (OCommand x) = objectType x
 
+    objectSame (OHost a) (OHost b) = objectSame a b
+    objectSame (OHostGroup a) (OHostGroup b) = objectSame a b
+    objectSame (OService a) (OService b) = objectSame a b
+    objectSame (OServiceGroup a) (OServiceGroup b) = objectSame a b
+    objectSame (OContact a) (OContact b) = objectSame a b
+    objectSame (OContactGroup a) (OContactGroup b) = objectSame a b
+    objectSame (OTimePeriod a) (OTimePeriod b) = objectSame a b
+    objectSame (OCommand a) (OCommand b) = objectSame a b
+    objectSame _ _ = False
+
 instance Serializable Object where
     serialize (OHost x) = serialize x
     serialize (OHostGroup x) = serialize x
@@ -62,6 +73,7 @@ instance Serializable Object where
 
 instance ObjectType Host where
     objectType _ = "host"
+    objectSame a b = hostName a == hostName b || hostHostName a == hostHostName b
 
 instance Serializable Host where
     dependencies Host{..} = catMaybes $
@@ -103,6 +115,7 @@ instance Serializable Host where
 
 instance ObjectType HostGroup where
     objectType _ = "hostgroup"
+    objectSame a b = hostGroupName a == hostGroupName b
 
 instance Serializable HostGroup where
     dependencies HostGroup{..} =
@@ -119,6 +132,7 @@ instance Serializable HostGroup where
 
 instance ObjectType Service where
     objectType _ = "service"
+    objectSame a b = serviceName a == serviceName b
 
 instance Serializable Service where
     dependencies Service{..} = catMaybes $
@@ -166,6 +180,7 @@ instance Serializable Service where
 
 instance ObjectType ServiceGroup where
     objectType _ = "servicegroup"
+    objectSame a b = serviceGroupName a == serviceGroupName b
 
 instance Serializable ServiceGroup where
     dependencies ServiceGroup{..} =
@@ -180,6 +195,7 @@ instance Serializable ServiceGroup where
 
 instance ObjectType Command where
     objectType _ = "command"
+    objectSame a b = commandName a == commandName b
 
 instance Serializable Command where
     dependencies _ = []
@@ -190,6 +206,7 @@ instance Serializable Command where
 
 instance ObjectType TimePeriod where
     objectType _ = "timeperiod"
+    objectSame a b = timePeriodName a == timePeriodName b
 
 instance Serializable TimePeriod where
     dependencies _ = []
@@ -200,6 +217,7 @@ instance Serializable TimePeriod where
 
 instance ObjectType Contact where
     objectType _ = "contact"
+    objectSame a b = contactName a == contactName b
 
 instance Serializable Contact where
     dependencies Contact{..} = catMaybes $
@@ -233,6 +251,7 @@ instance Serializable Contact where
 
 instance ObjectType ContactGroup where
     objectType _ = "contactgroup"
+    objectSame a b = contactGroupName a == contactGroupName b
 
 instance Serializable ContactGroup where
     dependencies ContactGroup{..} =
