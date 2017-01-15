@@ -96,7 +96,7 @@ instance Serializable Object where
 
 instance ObjectType Host where
     objectType _ = "host"
-    objectSame a b = hostName a == hostName b || hostHostName a == hostHostName b
+    objectSame a b = hostName a == hostName b
 
 instance Serializable Host where
     dependencies Host{..} = catMaybes $
