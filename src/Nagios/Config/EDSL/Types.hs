@@ -4,6 +4,7 @@ module Nagios.Config.EDSL.Types where
 -- device, etc. that resides on your network.
 data Host = Host { hostUse :: Maybe Host
                  , hostName :: String
+                 , hostHostName :: Maybe String
                  , hostAlias :: Maybe String
                  , hostDisplayName :: Maybe String
                  , hostAddress :: Maybe String
@@ -31,6 +32,7 @@ data Host = Host { hostUse :: Maybe Host
 -- | Create a new host with a specific name
 host :: String -> Host
 host name = Host { hostUse = Nothing
+                 , hostHostName = Nothing
                  , hostName = name
                  , hostAlias = Nothing
                  , hostDisplayName = Nothing

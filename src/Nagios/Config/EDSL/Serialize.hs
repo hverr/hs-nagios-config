@@ -20,7 +20,41 @@ class Serializable x where
 
 instance Serializable Host where
     serialize Host{..} = catMaybes
-        [field "use" hostUse]
+        [ field "use" hostUse
+        , field "name" hostName
+        , field "host_name" hostHostName
+        , field "alias" hostAlias
+        , field "display_name" hostDisplayName
+        , field "address" hostAddress
+        , lfield "parents" hostParents
+        , lfield "hostgroups" hostGroups
+        , field "check_command" hostCheckCommand
+        , field "max_check_attempts" hostMaxCheckAttempts
+        , field "check_interval" hostCheckInterval
+        , field "retry_interval" hostRetryInterval
+        , field "notes" hostNotes
+        , field "check_period" hostCheckPeriod
+        , field "event_handler_enabled" hostEventHandlerEnabled
+        , field "flap_detection_enabled" hostFlapDetectionEnabled
+        , field "process_perf_data" hostProcessPerfData
+        , field "retain_status_information" hostRetainStatusInformation
+        , field "retain_nonstatus_information" hostRetainNonStatusInformation
+        , lfield "contact_groups" hostContactGroups
+        , field "notification_interval" hostNotificationInterval
+        , field "notification_period" hostNotificationPeriod
+        , lfield "notification_options" hostNotificationOptions
+        , field "notifications_enabled" hostNotificationsEnabled
+        , field "register" hostRegister
+        ]
+
+instance Serializable HostGroup where
+    serialize HostGroup{..} = catMaybes
+        [ field "hostgroup_name" hostGroupName
+        , field "alias" hostGroupAlias
+        , lfield "members" hostGroupMembers
+        , lfield "hostgroup_members" hostGroupHostGroupMembers
+        , field "notes" hostGroupNotes
+        ]
 
 instance Serializable Service where
     serialize Service{..} = catMaybes
@@ -125,6 +159,7 @@ instance Encodable Command where encode = encode . commandName
 instance Encodable Contact where encode = encode . contactName
 instance Encodable ContactGroup where encode = encode . contactGroupName
 instance Encodable Host where encode = encode . hostName
+instance Encodable HostGroup where encode = encode . hostGroupName
 instance Encodable Int where encode = encode . show
 instance Encodable Service where encode = encode . serviceName
 instance Encodable String where encode = Just
