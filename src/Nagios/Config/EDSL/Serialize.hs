@@ -20,6 +20,7 @@ class Serializable x => ObjectType x where
 
 class Serializable x where
     serialize :: x -> [Field]
+    dependencies :: x -> [Object]
 
 data Object = OHost Host
             | OHostGroup HostGroup
@@ -50,10 +51,28 @@ instance Serializable Object where
     serialize (OTimePeriod x) = serialize x
     serialize (OCommand x) = serialize x
 
+    dependencies (OHost x) = dependencies x
+    dependencies (OHostGroup x) = dependencies x
+    dependencies (OService x) = dependencies x
+    dependencies (OServiceGroup x) = dependencies x
+    dependencies (OContact x) = dependencies x
+    dependencies (OContactGroup x) = dependencies x
+    dependencies (OTimePeriod x) = dependencies x
+    dependencies (OCommand x) = dependencies x
+
 instance ObjectType Host where
     objectType _ = "host"
 
 instance Serializable Host where
+    dependencies Host{..} = catMaybes $
+        [ OHost <$> hostUse ] ++
+        map (Just . OHost) hostParents ++
+        map (Just . OHostGroup) hostGroups ++
+        [ OCommand <$> hostCheckCommand
+        , OTimePeriod <$> hostCheckPeriod ] ++
+        map (Just . OContactGroup) hostContactGroups ++
+        [OTimePeriod <$> hostNotificationPeriod]
+
     serialize Host{..} = catMaybes
         [ field "use" hostUse
         , field "name" hostName
@@ -86,6 +105,10 @@ instance ObjectType HostGroup where
     objectType _ = "hostgroup"
 
 instance Serializable HostGroup where
+    dependencies HostGroup{..} =
+        map OHost hostGroupMembers ++
+        map OHostGroup hostGroupHostGroupMembers
+
     serialize HostGroup{..} = catMaybes
         [ field "hostgroup_name" hostGroupName
         , field "alias" hostGroupAlias
@@ -98,6 +121,15 @@ instance ObjectType Service where
     objectType _ = "service"
 
 instance Serializable Service where
+    dependencies Service{..} = catMaybes $
+        [ OCommand <$> serviceCheckCommand
+        , OTimePeriod <$> serviceCheckPeriod
+        , OCommand <$> serviceEventHandler
+        , OTimePeriod <$> serviceNotificationPeriod
+        ] ++
+        map (Just . OContact) serviceContacts ++
+        map (Just . OContactGroup) serviceContactGroups
+
     serialize Service{..} = catMaybes
         [ field "use" serviceUse
         , field "name" serviceName
@@ -136,6 +168,9 @@ instance ObjectType ServiceGroup where
     objectType _ = "servicegroup"
 
 instance Serializable ServiceGroup where
+    dependencies ServiceGroup{..} =
+        map OService serviceGroupMembers
+
     serialize ServiceGroup{..} = catMaybes
         [ field "servicegroup_name" serviceGroupName
         , field "alias" serviceGroupAlias
@@ -147,6 +182,7 @@ instance ObjectType Command where
     objectType _ = "command"
 
 instance Serializable Command where
+    dependencies _ = []
     serialize Command{..} = catMaybes
         [ field "command_name" commandName
         , field "command_line" commandLine
@@ -156,6 +192,7 @@ instance ObjectType TimePeriod where
     objectType _ = "timeperiod"
 
 instance Serializable TimePeriod where
+    dependencies _ = []
     serialize TimePeriod{..} = catMaybes
         [ field "timeperiod_name" timePeriodName
         , field "alias" timePeriodAlias ] ++
@@ -165,6 +202,15 @@ instance ObjectType Contact where
     objectType _ = "contact"
 
 instance Serializable Contact where
+    dependencies Contact{..} = catMaybes $
+        [ OContact <$> contactUse ] ++
+        map (Just . OContactGroup) contactGroups ++
+        [ OTimePeriod <$> contactHostNotificationPeriod
+        , OTimePeriod <$> contactServiceNotificationPeriod
+        , OCommand <$> contactHostNotificationCommands
+        , OCommand <$> contactServiceNotificationCommands
+        ]
+
     serialize Contact{..} = catMaybes
         [ field "use" contactUse
         , field "name" contactName
@@ -189,6 +235,9 @@ instance ObjectType ContactGroup where
     objectType _ = "contactgroup"
 
 instance Serializable ContactGroup where
+    dependencies ContactGroup{..} =
+        map OContact contactGroupMembers
+
     serialize ContactGroup{..} = catMaybes
         [ field "contactgroup_name" contactGroupName
         , field "alias" contactGroupAlias
@@ -196,6 +245,7 @@ instance Serializable ContactGroup where
         ]
 
 instance Encodable v => Serializable (Weekday v) where
+    dependencies _ = []
     serialize (Monday v) = catMaybes [field "monday" v]
     serialize (Tuesday v) = catMaybes [field "tuesday" v]
     serialize (Wednesday v) = catMaybes [field "wednesday" v]
