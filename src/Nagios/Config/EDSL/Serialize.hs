@@ -11,7 +11,7 @@ writeConfiguration :: [Object] -> String
 writeConfiguration = concatMap writeObject . resolve
 
 writeObject :: ObjectType x => x -> String
-writeObject x = "define " ++ objectType x ++ "{" ++ fields' ++ "\t}\n"
+writeObject x = "define " ++ objectType x ++ "{\n" ++ fields' ++ "\t}\n"
   where
     fields' = concatMap writeField (serialize x)
     writeField (Field key value) = "\t" ++ key ++ " " ++ value ++ "\n"
