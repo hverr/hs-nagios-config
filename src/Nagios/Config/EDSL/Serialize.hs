@@ -29,7 +29,7 @@ resolve = resolve' []
     elem' y (x:xs) | objectSame x y = True
                    | otherwise = elem' y xs
 
-data Field = Field String String
+data Field = Field String String deriving (Show)
 
 field :: Encodable v => String -> v -> Maybe Field
 field name value = Field name <$> encode value
@@ -53,6 +53,7 @@ data Object = OHost Host
             | OContactGroup ContactGroup
             | OTimePeriod TimePeriod
             | OCommand Command
+            deriving (Show)
 
 instance ObjectType Object where
     objectType (OHost x) = objectType x

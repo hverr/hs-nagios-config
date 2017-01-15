@@ -27,7 +27,7 @@ data Host = Host { hostUse :: Maybe Host
                  , hostNotificationOptions :: [HostNotificationOption]
                  , hostNotificationsEnabled :: Maybe Bool
                  , hostRegister :: Maybe Bool
-                 }
+                 } deriving (Show)
 
 -- | Create a new host with a specific name
 host :: String -> Host
@@ -65,7 +65,7 @@ data HostGroup = HostGroup { hostGroupName :: String
                            , hostGroupMembers :: [Host]
                            , hostGroupHostGroupMembers :: [HostGroup]
                            , hostGroupNotes :: Maybe String
-                           }
+                           } deriving (Show)
 
 -- | A service definition is used to identify a "service" that runs on a host.
 data Service = Service { serviceUse :: Maybe Service
@@ -100,7 +100,7 @@ data Service = Service { serviceUse :: Maybe Service
                        , serviceContactGroups :: [ContactGroup]
                        , serviceNotes :: Maybe String
                        , serviceRegister :: Maybe Bool
-                       }
+                       } deriving (Show)
 
 -- | Create a new service with a specified name.
 service :: String -> Service
@@ -143,18 +143,18 @@ data ServiceGroup = ServiceGroup { serviceGroupName :: String
                                  , serviceGroupAlias :: String
                                  , serviceGroupMembers :: [Service]
                                  , serviceGroupNotes :: Maybe String
-                                 }
+                                 } deriving (Show)
 
 -- | A command definition defines a command.
 data Command = Command { commandName :: String
                        , commandLine :: String
-                       }
+                       } deriving (Show)
 
 -- | A time period is a list of times during various days.
 data TimePeriod = TimePeriod { timePeriodName :: String
                              , timePeriodAlias :: String
                              , timePeriodWeekdays :: [Weekday String]
-                             }
+                             } deriving (Show)
 
 -- | A contact definition is used to identify someone who should be contacted
 -- in the event of a problem on your network.
@@ -175,7 +175,7 @@ data Contact = Contact { contactUse :: Maybe Contact
                        , contactRetainStatusInformation :: Maybe Bool
                        , contactRetainNonStatusInformation :: Maybe Bool
                        , contactRegister :: Maybe Bool
-                       }
+                       } deriving (Show)
 
 -- | Create a new contact with the specified name
 contact :: String -> Contact
@@ -202,7 +202,7 @@ contact name = Contact { contactUse = Nothing
 data ContactGroup = ContactGroup { contactGroupName :: String
                                  , contactGroupAlias :: String
                                  , contactGroupMembers :: [Contact]
-                                 }
+                                 } deriving (Show)
 
 -- | Create a new contact group with the specified name and alias
 contactgroup :: String -> String -> ContactGroup
@@ -215,6 +215,7 @@ data ServiceState = ServiceStateOK
                   | ServiceStateWarning
                   | ServiceStateUnknown
                   | ServiceStateCritical
+                  deriving (Show)
 
 data ServiceNotificationOption = ServiceNotificationWarning
                                | ServiceNotificationUnknown
@@ -222,6 +223,7 @@ data ServiceNotificationOption = ServiceNotificationWarning
                                | ServiceNotificationRecovery
                                | ServiceNotificationFlapping
                                | ServiceNotificationScheduledDowntime
+                               deriving (Show)
 
 serviceNotificationAlways :: [ServiceNotificationOption]
 serviceNotificationAlways = [ServiceNotificationWarning
@@ -237,6 +239,7 @@ data HostNotificationOption = HostNotificationDown
                             | HostNotificationRecovery
                             | HostNotificationFlapping
                             | HostNotificationScheduledDowntime
+                            deriving (Show)
 
 hostNotificationAlways :: [HostNotificationOption]
 hostNotificationAlways = [HostNotificationDown
@@ -253,3 +256,4 @@ data Weekday a = Monday a
                | Friday a
                | Saterday a
                | Sunday a
+               deriving (Show)
