@@ -255,7 +255,7 @@ instance Serializable Contact where
         [ field "use" contactUse
         , field "name" contactName
         , field "alias" contactAlias
-        , lfield "contactgropus" contactGroups
+        , lfield "contactgroups" contactGroups
         , field "host_notifications_enabled" contactHostNotificationsEnabled
         , field "service_notifications_enabled" contactServiceNotificationsEnabled
         , field "host_notification_period" contactHostNotificationPeriod
@@ -299,7 +299,9 @@ class Encodable x where
     encode :: x -> Maybe String
 
     encodeList :: [x] -> Maybe String
-    encodeList = encode . intercalate "," . mapMaybe encode
+    encodeList xs = case mapMaybe encode xs of
+                        [] -> Nothing
+                        xs' -> encode $ intercalate "," xs'
 
 instance Encodable Bool where encode flag = encode (if flag then "1" else "0")
 instance Encodable Command where encode = encode . commandName
