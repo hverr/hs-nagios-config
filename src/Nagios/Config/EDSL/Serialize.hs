@@ -21,6 +21,35 @@ class Serializable x => ObjectType x where
 class Serializable x where
     serialize :: x -> [Field]
 
+data Object = OHost Host
+            | OHostGroup HostGroup
+            | OService Service
+            | OServiceGroup ServiceGroup
+            | OContact Contact
+            | OContactGroup ContactGroup
+            | OTimePeriod TimePeriod
+            | OCommand Command
+
+instance ObjectType Object where
+    objectType (OHost x) = objectType x
+    objectType (OHostGroup x) = objectType x
+    objectType (OService x) = objectType x
+    objectType (OServiceGroup x) = objectType x
+    objectType (OContact x) = objectType x
+    objectType (OContactGroup x) = objectType x
+    objectType (OTimePeriod x) = objectType x
+    objectType (OCommand x) = objectType x
+
+instance Serializable Object where
+    serialize (OHost x) = serialize x
+    serialize (OHostGroup x) = serialize x
+    serialize (OService x) = serialize x
+    serialize (OServiceGroup x) = serialize x
+    serialize (OContact x) = serialize x
+    serialize (OContactGroup x) = serialize x
+    serialize (OTimePeriod x) = serialize x
+    serialize (OCommand x) = serialize x
+
 instance ObjectType Host where
     objectType _ = "host"
 
