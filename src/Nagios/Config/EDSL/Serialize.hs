@@ -159,6 +159,7 @@ instance ObjectType Service where
 
 instance Serializable Service where
     dependencies Service{..} = catMaybes $
+        [ OService <$> serviceUse ] ++
         map (Just . OHost) serviceHosts ++
         map (Just . OHostGroup) serviceHostGroups ++
         [ OCommand . command <$> serviceCheckCommand
@@ -258,6 +259,7 @@ instance Serializable Contact where
     serialize Contact{..} = catMaybes
         [ field "use" contactUse
         , field "name" contactName
+        , field "contact_name" contactName
         , field "alias" contactAlias
         , lfield "contactgroups" contactGroups
         , field "host_notifications_enabled" contactHostNotificationsEnabled
