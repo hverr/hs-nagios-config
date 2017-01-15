@@ -15,8 +15,14 @@ field name value = Field name <$> encode value
 lfield :: Encodable v => String -> [v] -> Maybe Field
 lfield name value = Field name <$> encodeList value
 
+class Serializable x => ObjectType x where
+    objectType :: x -> String
+
 class Serializable x where
     serialize :: x -> [Field]
+
+instance ObjectType Host where
+    objectType _ = "host"
 
 instance Serializable Host where
     serialize Host{..} = catMaybes
@@ -47,6 +53,9 @@ instance Serializable Host where
         , field "register" hostRegister
         ]
 
+instance ObjectType HostGroup where
+    objectType _ = "hostgroup"
+
 instance Serializable HostGroup where
     serialize HostGroup{..} = catMaybes
         [ field "hostgroup_name" hostGroupName
@@ -55,6 +64,9 @@ instance Serializable HostGroup where
         , lfield "hostgroup_members" hostGroupHostGroupMembers
         , field "notes" hostGroupNotes
         ]
+
+instance ObjectType Service where
+    objectType _ = "service"
 
 instance Serializable Service where
     serialize Service{..} = catMaybes
@@ -91,6 +103,9 @@ instance Serializable Service where
         , field "register" serviceRegister
         ]
 
+instance ObjectType ServiceGroup where
+    objectType _ = "servicegroup"
+
 instance Serializable ServiceGroup where
     serialize ServiceGroup{..} = catMaybes
         [ field "servicegroup_name" serviceGroupName
@@ -99,17 +114,26 @@ instance Serializable ServiceGroup where
         , field "notes" serviceGroupNotes
         ]
 
+instance ObjectType Command where
+    objectType _ = "command"
+
 instance Serializable Command where
     serialize Command{..} = catMaybes
         [ field "command_name" commandName
         , field "command_line" commandLine
         ]
 
+instance ObjectType TimePeriod where
+    objectType _ = "timeperiod"
+
 instance Serializable TimePeriod where
     serialize TimePeriod{..} = catMaybes
         [ field "timeperiod_name" timePeriodName
         , field "alias" timePeriodAlias ] ++
         concatMap serialize timePeriodWeekdays
+
+instance ObjectType Contact where
+    objectType _ = "contact"
 
 instance Serializable Contact where
     serialize Contact{..} = catMaybes
@@ -131,6 +155,9 @@ instance Serializable Contact where
         , field "retain_nonstatus_information" contactRetainNonStatusInformation
         , field "register" contactRegister
         ]
+
+instance ObjectType ContactGroup where
+    objectType _ = "contactgroup"
 
 instance Serializable ContactGroup where
     serialize ContactGroup{..} = catMaybes
@@ -187,5 +214,4 @@ instance Encodable ServiceState where
     encode ServiceStateCritical = Just "c"
 
 instance Encodable a => Encodable (Maybe a) where
-    encode Nothing = Nothing
-    encode (Just x) = encode x
+    encode = (>>= encode)
