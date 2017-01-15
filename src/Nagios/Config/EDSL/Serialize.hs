@@ -103,7 +103,7 @@ instance Serializable Host where
         [ OHost <$> hostUse ] ++
         map (Just . OHost) hostParents ++
         map (Just . OHostGroup) hostGroups ++
-        [ OCommand <$> hostCheckCommand
+        [ OCommand . command <$> hostCheckCommand
         , OTimePeriod <$> hostCheckPeriod ] ++
         map (Just . OContactGroup) hostContactGroups ++
         [OTimePeriod <$> hostNotificationPeriod]
@@ -159,9 +159,11 @@ instance ObjectType Service where
 
 instance Serializable Service where
     dependencies Service{..} = catMaybes $
-        [ OCommand <$> serviceCheckCommand
+        map (Just . OHost) serviceHosts ++
+        map (Just . OHostGroup) serviceHostGroups ++
+        [ OCommand . command <$> serviceCheckCommand
         , OTimePeriod <$> serviceCheckPeriod
-        , OCommand <$> serviceEventHandler
+        , OCommand . command <$> serviceEventHandler
         , OTimePeriod <$> serviceNotificationPeriod
         ] ++
         map (Just . OContact) serviceContacts ++
@@ -170,7 +172,8 @@ instance Serializable Service where
     serialize Service{..} = catMaybes
         [ field "use" serviceUse
         , field "name" serviceName
-        , field "hostgroup_name" serviceHostGroupName
+        , lfield "host_name" serviceHosts
+        , lfield "hostgroup_name" serviceHostGroups
         , field "service_description" serviceDescription
         , field "display_name" serviceDisplayName
         , field "is_volatile" serviceIsVolatile
@@ -248,8 +251,8 @@ instance Serializable Contact where
         map (Just . OContactGroup) contactGroups ++
         [ OTimePeriod <$> contactHostNotificationPeriod
         , OTimePeriod <$> contactServiceNotificationPeriod
-        , OCommand <$> contactHostNotificationCommands
-        , OCommand <$> contactServiceNotificationCommands
+        , OCommand . command <$> contactHostNotificationCommands
+        , OCommand . command<$> contactServiceNotificationCommands
         ]
 
     serialize Contact{..} = catMaybes
@@ -314,6 +317,9 @@ instance Encodable Int where encode = encode . show
 instance Encodable Service where encode = encode . serviceName
 instance Encodable String where encode = Just
 instance Encodable TimePeriod where encode = encode . timePeriodName
+
+instance Encodable CommandApp where
+    encode (CommandApp cmd args) = encode $ commandName cmd ++ "!" ++ intercalate "!" args
 
 instance Encodable HostNotificationOption where
     encode HostNotificationDown              = Just "d"

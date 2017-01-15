@@ -10,7 +10,7 @@ data Host = Host { hostUse :: Maybe Host
                  , hostAddress :: Maybe String
                  , hostParents :: [Host]
                  , hostGroups :: [HostGroup]
-                 , hostCheckCommand :: Maybe Command
+                 , hostCheckCommand :: Maybe CommandApp
                  , hostMaxCheckAttempts :: Maybe Int
                  , hostCheckInterval :: Maybe Int
                  , hostRetryInterval :: Maybe Int
@@ -67,14 +67,24 @@ data HostGroup = HostGroup { hostGroupName :: String
                            , hostGroupNotes :: Maybe String
                            } deriving (Show)
 
+-- | Create a new host group, with a name and an alias
+hostgroup :: String -> String -> HostGroup
+hostgroup name alias = HostGroup { hostGroupName = name
+                                 , hostGroupAlias = alias
+                                 , hostGroupMembers = []
+                                 , hostGroupHostGroupMembers = []
+                                 , hostGroupNotes = Nothing
+                                 }
+
 -- | A service definition is used to identify a "service" that runs on a host.
 data Service = Service { serviceUse :: Maybe Service
                        , serviceName :: String
-                       , serviceHostGroupName :: Maybe String
+                       , serviceHosts ::  [Host]
+                       , serviceHostGroups :: [HostGroup]
                        , serviceDescription :: Maybe String
                        , serviceDisplayName :: Maybe String
                        , serviceIsVolatile :: Maybe Bool
-                       , serviceCheckCommand :: Maybe Command
+                       , serviceCheckCommand :: Maybe CommandApp
                        , serviceInitialState :: Maybe ServiceState
                        , serviceMaxCheckAttempts :: Maybe Int
                        , serviceCheckInterval :: Maybe Int
@@ -86,7 +96,7 @@ data Service = Service { serviceUse :: Maybe Service
                        , serviceObsessOverService :: Maybe Bool
                        , serviceCheckFreshness :: Maybe Bool
                        , serviceFreshnessThreshold :: Maybe Int
-                       , serviceEventHandler :: Maybe Command
+                       , serviceEventHandler :: Maybe CommandApp
                        , serviceEventHandlerEnabled :: Maybe Bool
                        , serviceFlapDetectionEnabled :: Maybe Bool
                        , serviceProcessPerfData :: Maybe Bool
@@ -106,7 +116,8 @@ data Service = Service { serviceUse :: Maybe Service
 service :: String -> Service
 service name = Service { serviceUse = Nothing
                        , serviceName = name
-                       , serviceHostGroupName = Nothing
+                       , serviceHosts = []
+                       , serviceHostGroups = []
                        , serviceDescription = Nothing
                        , serviceDisplayName = Nothing
                        , serviceIsVolatile = Nothing
@@ -150,6 +161,17 @@ data Command = Command { commandName :: String
                        , commandLine :: String
                        } deriving (Show)
 
+-- | The application of a command.
+data CommandApp = CommandApp Command [String] deriving (Show)
+
+-- | Apply an existing command.
+apply :: Command -> [String] -> CommandApp
+apply = CommandApp
+
+-- | Get the original command definition from a command
+command :: CommandApp -> Command
+command (CommandApp x _) = x
+
 -- | A time period is a list of times during various days.
 data TimePeriod = TimePeriod { timePeriodName :: String
                              , timePeriodAlias :: String
@@ -168,8 +190,8 @@ data Contact = Contact { contactUse :: Maybe Contact
                        , contactServiceNotificationPeriod :: Maybe TimePeriod
                        , contactHostNotificationOptions :: [HostNotificationOption]
                        , contactServiceNotificationOptions :: [ServiceNotificationOption]
-                       , contactHostNotificationCommands :: Maybe Command
-                       , contactServiceNotificationCommands :: Maybe Command
+                       , contactHostNotificationCommands :: Maybe CommandApp
+                       , contactServiceNotificationCommands :: Maybe CommandApp
                        , contactEmail :: Maybe String
                        , contactCanSubmitCommands :: Maybe Bool
                        , contactRetainStatusInformation :: Maybe Bool

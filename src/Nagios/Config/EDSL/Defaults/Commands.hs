@@ -2,8 +2,9 @@ module Nagios.Config.EDSL.Defaults.Commands where
 
 import Nagios.Config.EDSL.Types
 
-checkHostAlive :: Command
-checkHostAlive = Command "check-host-alive"
+checkHostAlive :: CommandApp
+checkHostAlive = flip apply [] $
+                 Command "check-host-alive"
                          "$USER1$/check_ping -H $HOSTADDRESS$ -w 3000.0,80% -c 5000.0,100% -p 5"
 
 checkLocalDisk :: Command
