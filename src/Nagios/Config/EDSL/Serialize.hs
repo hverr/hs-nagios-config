@@ -22,6 +22,49 @@ instance Serializable Host where
     serialize Host{..} = catMaybes
         [field "use" hostUse]
 
+instance Serializable Service where
+    serialize Service{..} = catMaybes
+        [ field "use" serviceUse
+        , field "name" serviceName
+        , field "hostgroup_name" serviceHostGroupName
+        , field "service_description" serviceDescription
+        , field "display_name" serviceDisplayName
+        , field "is_volatile" serviceIsVolatile
+        , field "check_command" serviceCheckCommand
+        , field "initial_state" serviceInitialState
+        , field "max_check_attempts" serviceMaxCheckAttempts
+        , field "normal_check_interval" serviceCheckInterval
+        , field "retry_check_interval" serviceRetryInterval
+        , field "active_checks_enabled" serviceActiveChecksEnabled
+        , field "passive_checks_enabled" servicePassiveChecksEnabled
+        , field "parallelize_check" servicePassiveChecksEnabled
+        , field "check_period" serviceCheckPeriod
+        , field "obsess_over_service" serviceObsessOverService
+        , field "check_freshness" serviceCheckFreshness
+        , field "event_handler" serviceEventHandler
+        , field "event_handler_enabled" serviceEventHandlerEnabled
+        , field "flap_detection_enabled" serviceFlapDetectionEnabled
+        , field "process_perf_data" serviceProcessPerfData
+        , field "retain_status_information" serviceRetainStatusInformation
+        , field "retain_nonstatus_information" serviceRetainNonStatusInformation
+        , field "notification_interval" serviceNotificationInterval
+        , field "notification_period" serviceNotificationPeriod
+        , lfield "notification_options" serviceNotificationOptions
+        , field "notifications_enabled" serviceNotificationsEnabled
+        , lfield "contacts" serviceContacts
+        , lfield "contact_groups" serviceContactGroups
+        , field "notes" serviceNotes
+        , field "register" serviceRegister
+        ]
+
+instance Serializable ServiceGroup where
+    serialize ServiceGroup{..} = catMaybes
+        [ field "servicegroup_name" serviceGroupName
+        , field "alias" serviceGroupAlias
+        , lfield "members" serviceGroupMembers
+        , field "notes" serviceGroupNotes
+        ]
+
 instance Serializable Command where
     serialize Command{..} = catMaybes
         [ field "command_name" commandName
@@ -52,6 +95,7 @@ instance Serializable Contact where
         , field "can_submit_commands" contactCanSubmitCommands
         , field "retain_status_information" contactRetainStatusInformation
         , field "retain_nonstatus_information" contactRetainNonStatusInformation
+        , field "register" contactRegister
         ]
 
 instance Serializable ContactGroup where
@@ -81,6 +125,8 @@ instance Encodable Command where encode = encode . commandName
 instance Encodable Contact where encode = encode . contactName
 instance Encodable ContactGroup where encode = encode . contactGroupName
 instance Encodable Host where encode = encode . hostName
+instance Encodable Int where encode = encode . show
+instance Encodable Service where encode = encode . serviceName
 instance Encodable String where encode = Just
 instance Encodable TimePeriod where encode = encode . timePeriodName
 
@@ -98,6 +144,12 @@ instance Encodable ServiceNotificationOption where
     encode ServiceNotificationRecovery          = Just "r"
     encode ServiceNotificationFlapping          = Just "f"
     encode ServiceNotificationScheduledDowntime = Just "s"
+
+instance Encodable ServiceState where
+    encode ServiceStateOK       = Just "o"
+    encode ServiceStateWarning  = Just "w"
+    encode ServiceStateUnknown  = Just "u"
+    encode ServiceStateCritical = Just "c"
 
 instance Encodable a => Encodable (Maybe a) where
     encode Nothing = Nothing
