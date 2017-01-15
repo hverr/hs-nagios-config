@@ -7,6 +7,28 @@ import Data.List (intercalate)
 
 import Nagios.Config.EDSL.Types
 
+writeConfiguration :: [Object] -> String
+writeConfiguration = concatMap writeObject . resolve
+
+writeObject :: ObjectType x => x -> String
+writeObject x = "define " ++ objectType x ++ "{" ++ fields' ++ "\t}\n"
+  where
+    fields' = concatMap writeField (serialize x)
+    writeField (Field key value) = "\t" ++ key ++ " " ++ value ++ "\n"
+
+resolve :: [Object] -> [Object]
+resolve = resolve' []
+  where
+    resolve' l [] = l
+    resolve' l (x:xs)
+        | x `elem'` l = resolve' l xs
+        | otherwise = resolve' (x:l) (xs ++ dependencies x)
+
+    elem' :: ObjectType a => a -> [a] -> Bool
+    elem' _ [] = False
+    elem' y (x:xs) | objectSame x y = True
+                   | otherwise = elem' y xs
+
 data Field = Field String String
 
 field :: Encodable v => String -> v -> Maybe Field
