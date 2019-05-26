@@ -7,7 +7,7 @@ EDSL to specify Nagios configuration files.
 
 ```haskell
 #!/usr/bin/env stack
-{- stack --resolver lts-9.21 --package nagios-conf script -}
+{- stack --resolver lts-9.21 --package nagios-config script -}
 module Main where
 
 import Nagios.Config.EDSL
